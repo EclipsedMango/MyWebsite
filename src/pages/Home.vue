@@ -1,5 +1,6 @@
 <script setup>
 
+import FakeTerminal from "@/components/FakeTerminal.vue";
 </script>
 
 <template>
@@ -8,7 +9,7 @@
       <div class="home-line"></div>
       <div class="home-container-2">
         <h1 class="home-header">
-          <span style="font-style: italic; color: #d55fde">public void </span>
+          <span style="font-style: italic; color: #d55fde">public int </span>
           <span style="color: #51abef">main</span>
           <span style="color: #e8b936">()</span> {
         </h1>
@@ -49,16 +50,34 @@
         </div>
       </div>
     </div>
-    <div class="home-bottom-container">
-      <div class="home-bottom"></div>
-      <div class="home-bottom"></div>
-      <div class="home-bottom"></div>
-      <div class="home-bottom"></div>
-    </div>
+    <FakeTerminal></FakeTerminal>
+  </div>
+  <div class="test">
+    <div class="test-2"></div>
+    <div class="test-3"></div>
   </div>
 </template>
 
 <style scoped>
+.test {
+  display: flex;
+  position: relative;
+  width: 480px;
+  flex-direction: column-reverse;
+}
+
+.test-2 {
+  background: #1e1e1e;
+  height: 350px;
+}
+
+.test-3 {
+  background: #282828;
+  height: 40px;
+  display: flex;
+  padding: 8px 15px;
+}
+
 .home-container {
   display: flex;
   flex-direction: row;
@@ -72,7 +91,7 @@
 }
 
 .home-line {
-  border-left: 2px solid rgba(70, 70, 70, 0.64);
+  border-left: 2px solid rgba(51, 51, 51, 0.64);
   height: 505px;
   position: relative;
   left: 62px;
@@ -108,23 +127,6 @@
 .navigation-text:hover {
   background-color: rgba(74, 158, 218, 0.39);
   outline: rgba(0, 187, 250, 0.39) solid 2px;
-}
-
-.home-bottom-container {
-  display: flex;
-  flex-direction: row;
-  margin-top: 40px;
-  margin-left: 75px;
-}
-
-.home-bottom {
-  max-width: 300px;
-  text-wrap: wrap;
-  font-size: 24px;
-  background: #101010;
-  border: solid #1f1f1f;
-  padding: 130px 130px;
-  margin-left: 25px;
 }
 
 </style>
