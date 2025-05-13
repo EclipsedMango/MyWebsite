@@ -92,16 +92,16 @@ import FakeTerminal from "@/components/FakeTerminal.vue";
 
 .home-line {
   border-left: 2px solid rgba(51, 51, 51, 0.64);
-  height: 505px;
+  height: 370px;
   position: relative;
   left: 62px;
-  top: 142px;
+  top: 132px;
   margin-left: -2px;
   z-index: 0;
 }
 
 .home-header {
-  font-size: 50px;
+  font-size: 40px;
 }
 
 .home-text-box-container {
@@ -111,7 +111,7 @@ import FakeTerminal from "@/components/FakeTerminal.vue";
 .home-text-box-style {
   max-width: 1100px;
   text-wrap: wrap;
-  font-size: 24px;
+  font-size: 18px;
   background: #101010;
   border: solid #1f1f1f;
   padding: 10px 10px;

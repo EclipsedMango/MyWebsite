@@ -6,32 +6,32 @@ const router = createRouter({
         {
             path: '/:pathMatch(.*)*',
             name: 'NotFound',
-            component: import('@/pages/NotFound.vue')
+            component: () => import('@/pages/NotFound.vue')
         },
         {
             path: '/',
             name: 'Home',
-            component: import('@/pages/Home.vue')
+            component: () => import('@/pages/Home.vue')
         },
         {
             path: '/about-me',
             name: 'AboutMe',
-            component: import('@/pages/AboutMe.vue')
+            component: () => import('@/pages/AboutMe.vue')
         },
         {
             path: '/projects',
             name: 'Projects',
-            component: import('@/pages/Projects.vue')
+            component: () => import('@/pages/Projects.vue')
         },
         {
             path: '/services',
             name: 'Services',
-            component: import('@/pages/Services.vue')
+            component: () => import('@/pages/Services.vue')
         },
         {
             path: '/contact',
             name: 'Contact',
-            component: import('@/pages/Contact.vue')
+            component: () => import('@/pages/Contact.vue')
         }
     ],
 })
