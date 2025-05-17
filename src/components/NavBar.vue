@@ -6,30 +6,26 @@ import ContactIcon from "@/components/Icons/ContactIcon.vue";
 import {ref, computed} from 'vue';
 import ProjectsIcon from "@/components/Icons/ProjectsIcon.vue";
 import ServicesIcon from "@/components/Icons/ServicesIcon.vue";
+import {navBarCollapsed, SIDEBAR_WIDTH, SIDEBAR_WIDTH_COLLAPSED} from "@/navbardata.js";
 
 export default {
   components: {ServicesIcon, ProjectsIcon, ContactIcon, AboutMeIcon, MenuIcon, CloseIcon},
   setup() {
-    const collapsed = ref(true)
-    const toggleSideBar = () => (collapsed.value = !collapsed.value)
+    const toggleSideBar = () => (navBarCollapsed.value = !navBarCollapsed.value);
 
-    const SIDEBAR_WIDTH = 160
-    const SIDEBAR_WIDTH_COLLAPSED = 75
-    const sideBarWidth = computed(() => `${collapsed.value ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH}px`)
-    return {collapsed, toggleSideBar, sideBarWidth};
-  },
-  methods: {
+    const sideBarWidth = computed(() => `${navBarCollapsed.value ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH}px`);
+    return {navBarCollapsed, toggleSideBar, sideBarWidth};
   }
 };
 </script>
 
 <template>
-  <div class="sidenav" :style="{ width: sideBarWidth }">
-    <i @click="toggleSideBar" class="close-nav-icon" :class="{'open-nav-icon': collapsed}"><CloseIcon></CloseIcon></i>
-    <RouterLink to="/" class="sidenav-img" :class="{'sidenav-img-collapsed': collapsed}"><img src="/cube.png" alt="Cube Icon" class="img"></RouterLink>
-    <hr class="line-break" :class="{'line-break-collapsed': collapsed}">
+  <div class="sidenav" id="sidenav" :style="{ width: sideBarWidth }">
+    <i @click="toggleSideBar" class="close-nav-icon" :class="{'open-nav-icon': navBarCollapsed}"><CloseIcon></CloseIcon></i>
+    <RouterLink to="/" class="sidenav-img" :class="{'sidenav-img-collapsed': navBarCollapsed}"><img src="/cube.png" alt="Cube Icon" class="img"></RouterLink>
+    <hr class="line-break" :class="{'line-break-collapsed': navBarCollapsed}">
     <transition name="fade">
-      <div v-if="collapsed">
+      <div v-if="navBarCollapsed">
         <div class="inner-nav-icons">
           <RouterLink to="about-me" class="inner-nav-icon"><AboutMeIcon></AboutMeIcon></RouterLink>
           <RouterLink to="projects" class="inner-nav-icon"><ProjectsIcon></ProjectsIcon></RouterLink>
@@ -85,6 +81,8 @@ export default {
   transition: 0.25s ease;
   display: flex;
   flex-direction: column;
+
+  z-index: 1030;
 }
 
 .inner-nav {

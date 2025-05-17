@@ -4,7 +4,7 @@ import FakeTerminal from "@/components/FakeTerminal.vue";
 </script>
 
 <template>
-  <div>
+  <div class="thingy">
     <div class="home-container">
       <div class="home-line"></div>
       <div class="home-container-2">
@@ -52,30 +52,15 @@ import FakeTerminal from "@/components/FakeTerminal.vue";
     </div>
     <FakeTerminal></FakeTerminal>
   </div>
-  <div class="test">
-    <div class="test-2"></div>
-    <div class="test-3"></div>
-  </div>
 </template>
 
 <style scoped>
-.test {
-  display: flex;
-  position: relative;
-  width: 480px;
-  flex-direction: column-reverse;
-}
 
-.test-2 {
-  background: #1e1e1e;
-  height: 350px;
-}
-
-.test-3 {
-  background: #282828;
-  height: 40px;
+.thingy {
   display: flex;
-  padding: 8px 15px;
+  flex-direction: column;
+  width: 100vw;
+  overflow: hidden;
 }
 
 .home-container {

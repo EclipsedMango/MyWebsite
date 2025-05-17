@@ -1,30 +1,69 @@
 <script>
+let totalSeconds = 0;
+setInterval(setTime, 1000);
+
+function setTime() {
+  ++totalSeconds;
+}
+
+function pad(val) {
+  const valString = val + "";
+  if (valString.length < 2) {
+    return "0" + valString;
+  } else {
+    return valString;
+  }
+}
+
 export default {
   data() {
     return {
       command: '',
-      history: ['Welcome to Michael’s Terminal. Type <span style="color: #02a11c">help</span> to get started.'],
+      commandHistory: [],
+      historyIndex: -1,
+      history: ['Welcome to the Terminal. Type <span style="color: #02a11c">help</span> to get started.'],
       awaitingRedirectConfirm: false,
+      busy: false,
     };
   },
   methods: {
+    prevCommand() {
+      if (this.commandHistory.length <= 0) {return;}
+      if (this.historyIndex > this.commandHistory.length - 2) {return;}
+
+      this.historyIndex++;
+      this.command = this.commandHistory[this.commandHistory.length - 1 - this.historyIndex];
+    },
+    nextCommand() {
+      if (this.historyIndex > 0) {
+        this.historyIndex--;
+        this.command = this.commandHistory[this.commandHistory.length - 1 - this.historyIndex];
+        return;
+      }
+
+      this.historyIndex = -1;
+      this.command = '';
+    },
     handleCommand() {
-      let trimmed = this.command.trim();
-      if (!trimmed) {
+      if (this.busy) {return;}
+
+      let cmd = this.command.trim();
+      if (!cmd) {
         this.command = '';
         return;
       }
 
       const promptHtml = `<span style="color: #02a11c">visitor<span style="color: #EBEBEBA3">@website</span> ~/cool/website<span style="color: #EBEBEBA3;">> </span></span>`;
-      this.history.push(promptHtml + `<span class="command" style="color: #006cb9">${trimmed}</span>`);
+      this.history.push(promptHtml + `<span class="command" style="color: #006cb9">${cmd}</span>`);
 
-      // If we're waiting on the Y/n confirmation:
       if (this.awaitingRedirectConfirm) {
-        this.handleRedirectConfirmation(trimmed);
+        this.handleRedirectConfirmation(cmd);
       } else {
-        this.respondTo(trimmed);
+        this.respondTo(cmd);
       }
 
+      this.commandHistory.push(this.command);
+      this.historyIndex = -1;
       this.command = '';
       this.$nextTick(this.scrollToBottom);
     },
@@ -33,20 +72,17 @@ export default {
       if (yes.includes(answer)) {
         this.history.push('Redirecting to GitHub…');
         window.open('https://github.com/EclipsedMango', '_blank', 'noopener');
-      } else {
-        this.history.push('Redirect canceled.');
+        this.awaitingRedirectConfirm = false;
+        return;
       }
-      // Reset the flag
+
+      this.history.push('Redirect canceled.');
       this.awaitingRedirectConfirm = false;
     },
     respondTo(cmd) {
       const responses = {
-        help: [
-          `Available commands: about, github, ls, clear.`
-        ],
-        about: [
-          `Hi! I’m Michael, a developer who loves making games and shaders.`
-        ],
+        help: [`Available commands: about, github, ls, self-destruct, curl, uptime, and clear.`],
+        about: [`Hallo! I’m Michael, a developer who loves making games and shaders.`],
         ls: [
             `<a href="/about-me" target="_blank" style="color: #03a9af; text-decoration: underline">about-me</a>  ` +
             `<a href="/projects" target="_blank" style="color: #03a9af; text-decoration: underline">projects</a>  ` +
@@ -55,29 +91,73 @@ export default {
         ],
         clear: []
       };
-      if (cmd === 'clear') {
-        this.history = [];
-        this.history.push("Welcome to Michael’s Terminal. Type \"help\" to get started.")
+
+      switch (cmd) {
+        case 'clear':
+          this.history = [];
+          this.history.push(`Welcome to Michael’s Terminal. Type help to get started.`)
+          return;
+        case 'github':
+          this.history.push(`<span style="color: #cca002">WARNING</span>: You are about to be redirected to GitHub. Continue? (Y/n)`);
+          this.awaitingRedirectConfirm = true;
+          return;
+        case 'self-destruct':
+          this.busy = true;
+          this.$refs.input.hidden = true;
+          this.$refs.prompt.hidden = true;
+          this.history.push(`Initiating self destruct sequence.`);
+          setTimeout(() => {this.history.push(`3..`); this.$nextTick(this.scrollToBottom);}, 1000);
+          setTimeout(() => {this.history.push(`2..`); this.$nextTick(this.scrollToBottom);}, 2000);
+          setTimeout(() => {this.history.push(`1..`); this.$nextTick(this.scrollToBottom);}, 3000);
+          setTimeout(() => {
+            this.history.push(`haha, Just kidding.`);
+            this.$nextTick(this.scrollToBottom);
+            this.busy = false;
+            this.$refs.input.hidden = false;
+            this.$refs.prompt.hidden = false;
+          }, 4000);
+          return;
+        case 'uptime':
+          this.history.push('This console has been running for: ' +
+              pad(parseInt(totalSeconds/60/60%60)) + ":" + pad(parseInt(totalSeconds/60%60)) + ":" + pad(totalSeconds%60));
+          return;
+        default: break;
+      }
+
+      if (cmd.startsWith("sudo")) {
+        this.history.push(`visitor is not in the sudoers file. This incident will be reported.`);
         return;
       }
-      if (cmd === 'github') {
-        this.history.push(`<span style="color: #cca002">WARNING</span>: You are about to be redirected to Github. Continue? (Y/n)`);
-        this.awaitingRedirectConfirm = true;
+
+      if (cmd.startsWith("curl")) {
+        let url = cmd.split(" ")[1];
+        fetch(url).then((response) => {
+          response.text().then((text) => {
+            if (!text.startsWith("https://")) {this.history.push("invalid url."); return;}
+            this.history.push(text)
+          })
+        }).catch(e => {
+          this.history.push("request failed.")
+        });
+        this.$nextTick(this.scrollToBottom);
         return;
       }
 
       if (responses[cmd]) {
         this.history.push(...responses[cmd]);
-      } else {
-        this.history.push(`<span style="color: #ad1414">Error</span>: Unknown Command. Type <span style="color: #02a11c">help</span> to see a list of commands.`);
+        this.$nextTick(this.scrollToBottom);
+        return;
       }
+
+      this.history.push(`<span style="color: #ad1414">Error</span>: Unknown Command. Type <span style="color: #02a11c">help</span> to see a list of commands.`);
+      this.$nextTick(this.scrollToBottom);
     },
     scrollToBottom() {
-      const terminal = this.$el.querySelector('.output');
-      terminal.scrollTop = terminal.scrollHeight;
+      this.$refs.scrollAnchor.scrollIntoView({ behavior: 'smooth' });
     },
     focusInput() {
       this.$refs.input.focus();
+      this.$nextTick(this.scrollToBottom);
     },
   },
 };
@@ -92,24 +172,15 @@ export default {
     </div>
     <div class="terminal" @click="focusInput">
       <div class="output">
-        <div
-            v-for="(line, index) in history"
-            :key="index"
-            class="line"
-            v-html="line"
-        ></div>
+        <div v-for="(line, index) in history" :key="index" class="line" v-html="line"></div>
       </div>
       <div class="input-line">
-        <span class="prompt">visitor<span style="color: #EBEBEBA3">@website</span> ~/cool/website<span style="color: #EBEBEBA3;">></span></span>
-        <input
-            ref="input"
-            v-model="command"
-            @keyup.enter="handleCommand"
-            class="terminal-input"
-            spellcheck="false"
-            autocomplete="off"
+        <span ref="prompt" class="prompt">visitor<span style="color: #EBEBEBA3">@website</span> ~/cool/website<span style="color: #EBEBEBA3;">></span></span>
+        <input ref="input" v-model="command" class="terminal-input" spellcheck="false" autocomplete="off"
+               @keyup.enter="handleCommand" @keydown.up.prevent="prevCommand" @keydown.down.prevent="nextCommand"
         />
       </div>
+      <div ref="scrollAnchor"></div>
     </div>
   </div>
 </template>
@@ -135,9 +206,9 @@ export default {
   display: flex;
   flex-direction: column;
   background: #1e1e1e;
-  padding: 1rem;
+  padding: 1rem 1rem 4%;
   height: 350px;
-  width: 100%;
+  width: 100vw;
   cursor: text;
   overflow-y: auto;
 }
@@ -149,12 +220,10 @@ export default {
 
 .input-line {
   display: flex;
-  align-items: center;
 }
 
 .prompt {
-  margin-right: 0.5rem;
-  width: 370px;
+  width: 340px;
   color: #02a11c;
 }
 
