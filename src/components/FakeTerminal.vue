@@ -1,4 +1,10 @@
 <script>
+import DOMPurify from 'dompurify';
+
+function purify(val) {
+  return DOMPurify.sanitize(val);
+}
+
 let totalSeconds = 0;
 setInterval(setTime, 1000);
 
@@ -131,10 +137,11 @@ export default {
 
       if (cmd.startsWith("curl")) {
         let url = cmd.split(" ")[1];
+        if (!url.startsWith("https://")) {this.history.push("invalid url."); return;}
+
         fetch(url).then((response) => {
           response.text().then((text) => {
-            if (!text.startsWith("https://")) {this.history.push("invalid url."); return;}
-            this.history.push(text)
+            this.history.push(purify(text))
           })
         }).catch(e => {
           this.history.push("request failed.")
@@ -206,7 +213,7 @@ export default {
   display: flex;
   flex-direction: column;
   background: #1e1e1e;
-  padding: 1rem 1rem 4%;
+  padding: 1rem 1rem 2%;
   height: 350px;
   width: 100vw;
   cursor: text;
