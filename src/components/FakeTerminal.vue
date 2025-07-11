@@ -2,7 +2,8 @@
 import DOMPurify from 'dompurify';
 import {computed} from "vue";
 import MinimiseIcon from "@/components/Icons/MinimiseIcon.vue";
-import {terminalCollapsed} from "@/terminaldata.js";
+import {terminalCollapsed, delayedTerminalCollapse} from "@/terminaldata.js";
+import PlusIcon from "@/components/Icons/PlusIcon.vue";
 
 function purify(val) {
   return DOMPurify.sanitize(val);
@@ -25,7 +26,7 @@ function pad(val) {
 }
 
 export default {
-  components: {MinimiseIcon},
+  components: {PlusIcon, MinimiseIcon},
   data() {
     return {
       command: '',
@@ -37,8 +38,11 @@ export default {
     };
   },
   setup() {
-    const toggleTerminal = () => {terminalCollapsed.value = !terminalCollapsed.value}
-    return {terminalCollapsed, toggleTerminal};
+    const toggleTerminal = () => {
+      terminalCollapsed.value = !terminalCollapsed.value
+      setTimeout(() => {delayedTerminalCollapse.value = !delayedTerminalCollapse.value}, 200)
+    }
+    return {terminalCollapsed, delayedTerminalCollapse, toggleTerminal};
   },
   methods: {
     prevCommand() {
@@ -184,7 +188,14 @@ export default {
       <span>Terminal</span>
       <div class="terminal-title-line"></div>
       <span style="padding-left: 25px">Local</span>
-      <i @click="toggleTerminal" style="margin-left: calc(100vw - 275px)"><minimise-icon></minimise-icon></i>
+      <div @click="toggleTerminal" class="minimise-button-container">
+        <div v-if="!delayedTerminalCollapse" style="display: flex; align-content: center">
+          <MinimiseIcon class="minimise-button" :class="{'minimise-button-closed': terminalCollapsed}"></MinimiseIcon>
+        </div>
+        <div v-else style="display: flex; align-content: center">
+          <PlusIcon class="maximise-button" :class="{'maximise-button-closed': !terminalCollapsed}"></PlusIcon>
+        </div>
+      </div>
     </div>
     <div class="terminal" :class="{'terminal-closed': terminalCollapsed}" @click="focusInput">
       <div class="output">
@@ -242,6 +253,38 @@ export default {
   position: relative;
   margin-left: -2px;
   z-index: 0;
+}
+
+.minimise-button-container {
+  margin-left: calc(100vw - 275px);
+}
+
+.minimise-button {
+  scale: 1.25;
+}
+
+.minimise-button:hover {
+  transition: all 0.2s ease;
+  scale: 1.65;
+}
+
+.minimise-button-closed {
+  transition: all 0.2s ease;
+  opacity: 0;
+}
+
+.maximise-button {
+  scale: 1.25;
+}
+
+.maximise-button:hover {
+  transition: all 0.2s ease;
+  scale: 1.65;
+}
+
+.maximise-button-closed {
+  transition: all 0.2s ease;
+  opacity: 0;
 }
 
 .terminal {
