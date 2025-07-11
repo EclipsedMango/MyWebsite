@@ -16,9 +16,17 @@ import FakeTerminal from "@/components/FakeTerminal.vue";
       <div class="home-line"></div>
       <div class="home-container-2">
         <h1 class="home-header">
-          <span style="font-style: italic; color: #d55fde">public int </span>
+          <span style="font-style: italic; color: #d55fde">static int </span>
           <span style="color: #51abef">main</span>
-          <span style="color: #e8b936">()</span> {
+          <span style="color: #e8b936">(</span>
+          <span>
+            <span style="font-style: italic; color: #d55fde">int </span>
+            <span style="color: #5c636e;">argc</span>,
+            <span style="font-style: italic; color: #d55fde">char </span>
+            *<span style="color: #5c636e;">argv</span>
+            <span style="color: #e8b936">[]</span>
+          </span>
+          <span style="color: #e8b936">)</span> {
         </h1>
         <div class="home-text-box-container">
           <div class="home-text-box-style">
@@ -93,10 +101,10 @@ import FakeTerminal from "@/components/FakeTerminal.vue";
 
 .home-line {
   border-left: 2px solid rgba(51, 51, 51, 0.64);
-  height: 370px;
+  height: 375px;
   position: relative;
   left: 62px;
-  top: 132px;
+  top: 125px;
   margin-left: -2px;
   z-index: 0;
 }

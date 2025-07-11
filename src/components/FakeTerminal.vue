@@ -1,5 +1,8 @@
 <script>
 import DOMPurify from 'dompurify';
+import {computed} from "vue";
+import MinimiseIcon from "@/components/Icons/MinimiseIcon.vue";
+import {terminalCollapsed} from "@/terminaldata.js";
 
 function purify(val) {
   return DOMPurify.sanitize(val);
@@ -22,6 +25,7 @@ function pad(val) {
 }
 
 export default {
+  components: {MinimiseIcon},
   data() {
     return {
       command: '',
@@ -31,6 +35,10 @@ export default {
       awaitingRedirectConfirm: false,
       busy: false,
     };
+  },
+  setup() {
+    const toggleTerminal = () => {terminalCollapsed.value = !terminalCollapsed.value}
+    return {terminalCollapsed, toggleTerminal};
   },
   methods: {
     prevCommand() {
@@ -171,13 +179,14 @@ export default {
 </script>
 
 <template>
-  <div style="padding-top: 25px">
+  <div class="terminal-container" :class="{'terminal-container-closed': terminalCollapsed}">
     <div class="terminal-title">
       <span>Terminal</span>
       <div class="terminal-title-line"></div>
       <span style="padding-left: 25px">Local</span>
+      <i @click="toggleTerminal" style="margin-left: calc(100vw - 275px)"><minimise-icon></minimise-icon></i>
     </div>
-    <div class="terminal" @click="focusInput">
+    <div class="terminal" :class="{'terminal-closed': terminalCollapsed}" @click="focusInput">
       <div class="output">
         <div v-for="(line, index) in history" :key="index" class="line" v-html="line"></div>
       </div>
@@ -193,6 +202,32 @@ export default {
 </template>
 
 <style scoped>
+
+.terminal-container {
+  transition: all 0.5s ease;
+
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+
+  bottom: 0;
+  position: fixed;
+  height: 365px;
+  width: 100vw;
+}
+
+.terminal-container-closed {
+  transition: all 0.5s ease;
+
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+
+  bottom: 20px;
+  position: fixed;
+  height: 20px;
+  width: 100vw;
+}
 
 .terminal-title {
   display: flex;
@@ -210,14 +245,33 @@ export default {
 }
 
 .terminal {
+  transition: all 0.5s ease;
+
   display: flex;
   flex-direction: column;
-  background: #1e1e1e;
-  padding: 1rem 1rem 2%;
-  height: 350px;
-  width: 100vw;
-  cursor: text;
+  flex-grow: 1;
+
   overflow-y: auto;
+
+  background: #1e1e1e;
+  padding: 1rem;
+  cursor: text;
+}
+
+.terminal-closed {
+  transition: all 0.5s ease;
+
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+
+  overflow-y: auto;
+
+  background: #1e1e1e;
+  padding: 1rem;
+  cursor: text;
+
+  visibility: hidden;
 }
 
 .output {
@@ -230,7 +284,9 @@ export default {
 }
 
 .prompt {
-  width: 340px;
+  min-width: 285px;
+  width: 315px;
+  text-wrap: nowrap;
   color: #02a11c;
 }
 
