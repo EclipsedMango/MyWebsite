@@ -154,6 +154,7 @@ import FakeTerminal from "@/components/FakeTerminal.vue";
   margin-top: 20px;
   width: 350px;
   max-height: 500px;
+  scrollbar-color: #3b3b3b #1e1e1e;
 }
 
 .ch-title-line {
