@@ -133,7 +133,6 @@ import FakeTerminal from "@/components/FakeTerminal.vue";
   font-size: 18px;
   background: #101010;
   border: solid #070707;
-  //border: solid #1f1f1f;
   padding: 10px 10px;
   margin-bottom: 15px;
 }
