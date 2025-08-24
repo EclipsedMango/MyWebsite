@@ -153,6 +153,12 @@ const commands = {
       pushHistory('visitor is not in the sudoers file. This incident will be reported.');
     }
   },
+  echo: {
+    description: 'Displays a STRING of text.',
+    execute: () => {
+      pushHistory(command.value.split(' ').slice(1).join(' '));
+    }
+  },
   cd: {
     description: 'Changes the current working directory.',
     execute: async (args) => {
@@ -247,6 +253,24 @@ const handleRedirectConfirmation = (answer) => {
   awaitingRedirectConfirm.value = false;
 };
 
+const handleTabComplete = () => {
+  const input = command.value.trim();
+  if (!input || input.includes(' ')) {
+    return;
+  }
+
+  const commandList = Object.keys(commands);
+  const matches = commandList.filter(cmd => cmd.startsWith(input));
+
+  if (matches.length === 1) {
+    command.value = matches[0] + ' ';
+  } else if (matches.length > 1) {
+    pushHistory(`${PROMPT_WRAPPED} <span class="command">${command.value}</span>`);
+    pushHistory(matches.join('  '));
+    scrollToBottom();
+  }
+};
+
 const handleCommand = () => {
   if (isBusy.value) return;
 
@@ -315,6 +339,7 @@ const toggleTerminal = () => {
             @keyup.enter="handleCommand"
             @keydown.up.prevent="prevCommand"
             @keydown.down.prevent="nextCommand"
+            @keydown.tab.prevent="handleTabComplete"
         />
       </div>
 
