@@ -1,14 +1,25 @@
 <script setup>
 import { computed } from "vue";
+import { useRoute } from "vue-router";
 import NavBar from "@/components/NavBar.vue";
 import { navBarCollapsed, SIDEBAR_WIDTH, SIDEBAR_WIDTH_COLLAPSED } from "@/navbardata.js";
 
-const sideBarWidth = computed(() => `${navBarCollapsed.value ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH}px`);
+const route = useRoute();
+
+const showChrome = computed(() => !route.meta.hideChrome);
+
+const sideBarWidth = computed(() => {
+  if (!showChrome.value) {
+    return "0px";
+  }
+
+  return `${navBarCollapsed.value ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH}px`;
+});
 </script>
 
 <template>
   <div class="main-app">
-    <NavBar></NavBar>
+    <NavBar v-if="showChrome"></NavBar>
     <main class="app-content" :style="{ marginLeft: sideBarWidth }">
       <RouterView></RouterView>
     </main>

@@ -36,7 +36,8 @@ const router = createRouter({
     {
       path: '/tty',
       name: 'Teletype',
-      component: () => import('@/pages/Teletype.vue')
+      component: () => import('@/pages/Teletype.vue'),
+      meta: { hideChrome: true }
     }
   ],
 })

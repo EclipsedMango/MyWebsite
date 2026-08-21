@@ -1,12 +1,4 @@
 <script setup>
-fetch("https://api.github.com/repos/EclipsedMango/MyWebsite/commits").then((value) => value.json().then((value) => {
-  const commitsElement = document.getElementById("commits")
-  for (let i = 0; i < value.length; i++) {
-    i !== 0 ? commitsElement.innerHTML = commitsElement.innerHTML + "<br>" + value[i].commit.message + "<br>" :
-        commitsElement.innerHTML = commitsElement.innerHTML + value[i].commit.message + "<br>";
-  }
-}))
-
 import FakeTerminal from "@/components/FakeTerminal.vue";
 </script>
 
@@ -64,15 +56,6 @@ import FakeTerminal from "@/components/FakeTerminal.vue";
           }
         </div>
       </div>
-      <div class="home-line-2"></div>
-      <div class="commit-history-container">
-        <div class="ch-title-box">
-          <div>Commit History</div>
-          <div class="ch-title-line"></div>
-          <div style="padding-left: 25px">Latest Commits</div>
-        </div>
-        <div class="commit-history-box" id="commits"></div>
-      </div>
     </div>
     <FakeTerminal></FakeTerminal>
   </div>
@@ -109,16 +92,6 @@ import FakeTerminal from "@/components/FakeTerminal.vue";
   z-index: 0;
 }
 
-.home-line-2 {
-  border-left: 2px solid rgba(51, 51, 51, 0.64);
-  height: 500px;
-  position: relative;
-  left: 60px;
-  top: 50px;
-  margin-left: -2px;
-  z-index: 0;
-}
-
 .home-header {
   font-size: 40px;
 }
@@ -146,38 +119,6 @@ import FakeTerminal from "@/components/FakeTerminal.vue";
 .navigation-text:hover {
   background-color: rgba(74, 158, 218, 0.39);
   outline: rgba(0, 187, 250, 0.39) solid 2px;
-}
-
-.commit-history-container {
-  margin-left: 120px;
-  margin-top: 20px;
-  width: 350px;
-  max-height: 500px;
-  scrollbar-color: #3b3b3b #1e1e1e;
-}
-
-.ch-title-line {
-  border-left: 3px solid rgba(63, 63, 63, 0.64);
-  height: 18px;
-  left: 13px;
-  top: 3px;
-  position: relative;
-  margin-left: -2px;
-  z-index: 0;
-}
-
-.ch-title-box {
-  display: flex;
-  background: #282828;
-  padding: 5px 15px;
-  justify-content: center;
-}
-
-.commit-history-box {
-  padding: 10px 15px;
-  background: #1e1e1e;
-  height: 100%;
-  overflow-y: auto;
 }
 
 </style>
