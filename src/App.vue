@@ -3,6 +3,7 @@ import { computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import NavBar from "@/components/NavBar.vue";
 import EditorTabs from "@/components/EditorTabs.vue";
+import FakeTerminal from "@/components/FakeTerminal.vue";
 import { navBarCollapsed, SIDEBAR_WIDTH, SIDEBAR_WIDTH_COLLAPSED } from "@/navbardata.js";
 import { hasOpenTabs, isOpenable, syncRoute } from "@/tabsdata.js";
 
@@ -36,6 +37,7 @@ const sideBarWidth = computed(() => {
         <RouterView></RouterView>
       </main>
     </div>
+    <FakeTerminal v-if="showChrome"></FakeTerminal>
   </div>
 </template>
 

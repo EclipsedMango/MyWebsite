@@ -1,5 +1,5 @@
 <script setup>
-import FakeTerminal from "@/components/FakeTerminal.vue";
+
 </script>
 
 <template>
@@ -57,7 +57,6 @@ import FakeTerminal from "@/components/FakeTerminal.vue";
         </div>
       </div>
     </div>
-    <FakeTerminal></FakeTerminal>
   </div>
 </template>
 

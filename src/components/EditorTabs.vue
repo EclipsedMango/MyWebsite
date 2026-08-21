@@ -196,7 +196,7 @@ function close(tab) {
 }
 
 .tab-close:hover {
-  background-color: var(--ide-hover);
+  background-color: var(--ide-hover-light);
   color: var(--ide-text-bright);
 }
 </style>

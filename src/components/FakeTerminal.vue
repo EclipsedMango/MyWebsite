@@ -1,15 +1,13 @@
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick, computed } from 'vue';
+import { ref, onMounted, onUnmounted, nextTick, computed, watch } from 'vue';
 import {useRouter} from "vue-router";
 import DOMPurify from 'dompurify';
-import MinimiseIcon from "@/components/Icons/MinimiseIcon.vue";
-import PlusIcon from "@/components/Icons/PlusIcon.vue";
+import XIcon from "@/components/Icons/XIcon.vue";
 import {
-  terminalCollapsed,
-  delayedTerminalCollapse,
+  terminalOpen,
   terminalMounted,
+  closeTerminal,
   TERMINAL_HEIGHT,
-  TERMINAL_BAR_HEIGHT,
 } from "@/terminaldata.js";
 import { TOOL_STRIP_WIDTH } from "@/navbardata.js";
 
@@ -46,6 +44,13 @@ onMounted(() => {
 onUnmounted(() => {
   terminalMounted.value = false;
   clearInterval(uptimeInterval);
+});
+
+// Reopening should put the caret straight back in the prompt.
+watch(terminalOpen, (open) => {
+  if (open && window.innerWidth > 768) {
+    nextTick(focusInput);
+  }
 });
 
 const formattedUptime = computed(() => {
@@ -313,21 +318,14 @@ const handleCommand = () => {
   scrollToBottom();
 };
 
-const toggleTerminal = () => {
-  terminalCollapsed.value = !terminalCollapsed.value;
-  setTimeout(() => {
-    delayedTerminalCollapse.value = !delayedTerminalCollapse.value
-  }, 200);
-};
-
 </script>
 
 <template>
   <div
       class="terminal-container"
-      :class="{'terminal-container-closed': terminalCollapsed}"
+      :class="{'terminal-container-closed': !terminalOpen}"
       :style="{
-        height: `${terminalCollapsed ? TERMINAL_BAR_HEIGHT : TERMINAL_HEIGHT}px`,
+        height: `${TERMINAL_HEIGHT}px`,
         left: `${TOOL_STRIP_WIDTH}px`,
         width: `calc(100vw - ${TOOL_STRIP_WIDTH}px)`,
       }"
@@ -336,16 +334,11 @@ const toggleTerminal = () => {
       <span>Terminal</span>
       <div class="terminal-title-line"></div>
       <span style="padding-left: 25px">Local</span>
-      <div @click="toggleTerminal" class="minimise-button-container">
-        <div v-if="!delayedTerminalCollapse" style="display: flex; align-content: center">
-          <MinimiseIcon class="minimise-button" :class="{'minimise-button-closed': terminalCollapsed}"></MinimiseIcon>
-        </div>
-        <div v-else style="display: flex; align-content: center">
-          <PlusIcon class="maximise-button" :class="{'maximise-button-closed': !terminalCollapsed}"></PlusIcon>
-        </div>
-      </div>
+      <button class="close-button" type="button" title="Close terminal" @click="closeTerminal">
+        <XIcon></XIcon>
+      </button>
     </div>
-    <div class="terminal" :class="{'terminal-closed': terminalCollapsed}" @click="focusInput">
+    <div class="terminal" @click="focusInput">
       <div class="output">
         <div v-for="(line, index) in history" :key="index" class="line" v-html="line"></div>
       </div>
@@ -392,7 +385,7 @@ const toggleTerminal = () => {
 }
 
 .terminal-container {
-  transition: all 0.5s ease;
+  transition: transform 0.25s ease;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -402,14 +395,8 @@ const toggleTerminal = () => {
 }
 
 .terminal-container-closed {
-  transition: all 0.5s ease;
-
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-
-  bottom: 20px;
-  position: fixed;
+  transform: translateY(100%);
+  pointer-events: none;
 }
 
 .terminal-title {
@@ -429,33 +416,27 @@ const toggleTerminal = () => {
   z-index: 0;
 }
 
-.minimise-button-container {
+.close-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 24px;
+  height: 24px;
   margin-left: auto;
-  padding-right: 15px;
+
+  border: none;
+  border-radius: 4px;
+  background: none;
+
+  color: var(--ide-icon);
   cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-.minimise-button {
-  scale: 1.25;
-}
-
-.minimise-button:hover {
-  transition: all 0.2s ease;
-  scale: 1.65;
-}
-
-.minimise-button, .maximise-button {
-  scale: 1.25;
-  transition: all 0.2s ease;
-}
-
-.minimise-button:hover, .maximise-button:hover {
-  scale: 1.65;
-}
-
-.minimise-button-closed, .maximise-button-closed {
-  transition: all 0.2s ease;
-  opacity: 0;
+.close-button:hover {
+  background-color: var(--ide-hover-light);
+  color: var(--ide-text-bright);
 }
 
 .terminal {
@@ -467,10 +448,6 @@ const toggleTerminal = () => {
   background: #1e1e1e;
   padding: 1rem;
   cursor: text;
-}
-
-.terminal-closed {
-  visibility: hidden;
 }
 
 .output {

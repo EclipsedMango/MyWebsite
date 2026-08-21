@@ -5,8 +5,9 @@ import VersionControl from "@/components/VersionControl.vue";
 import FolderIcon from "@/components/Icons/FolderIcon.vue";
 import GitBranchIcon from "@/components/Icons/GitBranchIcon.vue";
 import CollapseIcon from "@/components/Icons/CollapseIcon.vue";
+import TerminalIcon from "@/components/Icons/TerminalIcon.vue";
 import { activeTool, navBarCollapsed, selectTool, SIDEBAR_WIDTH, TOOLS, TOOL_STRIP_WIDTH } from "@/navbardata.js";
-import { terminalOffset } from "@/terminaldata.js";
+import { terminalOffset, terminalOpen, toggleTerminal } from "@/terminaldata.js";
 
 const TOOL_BUTTONS = [
   { id: "project", icon: FolderIcon },
@@ -42,6 +43,17 @@ function toggleNavBar() {
         @click="selectTool(tool.id)"
       >
         <component :is="tool.icon" class="strip-icon"></component>
+      </button>
+
+      <button
+        class="tool-strip-button strip-bottom"
+        :class="{ active: terminalOpen }"
+        type="button"
+        title="Terminal"
+        :aria-pressed="terminalOpen"
+        @click="toggleTerminal"
+      >
+        <TerminalIcon class="strip-icon"></TerminalIcon>
       </button>
     </div>
 
@@ -117,6 +129,10 @@ function toggleNavBar() {
 .tool-strip-button.active {
   background-color: var(--ide-selected);
   color: var(--ide-text-bright);
+}
+
+.strip-bottom {
+  margin-top: auto;
 }
 
 .strip-icon {

@@ -63,6 +63,7 @@
   --ide-icon: rgba(235, 235, 235, 0.55);
 
   --ide-hover: #2f2f2f;
+  --ide-hover-light: #3a3a3a;
   --ide-selected: #1b4a6e;
   --ide-guide: rgba(63, 63, 63, 0.64);
   --ide-accent: #03a9af;
