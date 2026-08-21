@@ -4,18 +4,25 @@
   font-weight: normal;
 }
 
-a,
-.green {
+/*a,*/
+/*.green {*/
+/*  text-decoration: none;*/
+/*  color: hsl(177, 33%, 41%);*/
+/*  transition: 0.4s;*/
+/*  padding: 3px;*/
+/*}*/
+
+.fancy-link {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
+  color: hsl(210, 33%, 41%);
   transition: 0.4s;
   padding: 3px;
 }
 
 @media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-    outline: hsla(130, 86%, 49%, 0.25) solid 2px;
+  .fancy-link:hover {
+    background-color: hsla(191, 100%, 37%, 0.1);
+    outline: hsla(194, 86%, 49%, 0.25) solid 1px;
   }
 }
 

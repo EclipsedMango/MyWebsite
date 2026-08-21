@@ -4,7 +4,14 @@ import {useRouter} from "vue-router";
 import DOMPurify from 'dompurify';
 import MinimiseIcon from "@/components/Icons/MinimiseIcon.vue";
 import PlusIcon from "@/components/Icons/PlusIcon.vue";
-import { terminalCollapsed, delayedTerminalCollapse } from "@/terminaldata.js";
+import {
+  terminalCollapsed,
+  delayedTerminalCollapse,
+  terminalMounted,
+  TERMINAL_HEIGHT,
+  TERMINAL_BAR_HEIGHT,
+} from "@/terminaldata.js";
+import { TOOL_STRIP_WIDTH } from "@/navbardata.js";
 
 const history = ref(['Welcome to the Terminal. Type <span class="text-success">help</span> to get started.']);
 const command = ref('');
@@ -25,12 +32,19 @@ const uptimeSeconds = ref(0);
 let uptimeInterval = null;
 
 onMounted(() => {
+  terminalMounted.value = true;
+
   uptimeInterval = setInterval(() => {
     uptimeSeconds.value++;
   }, 1000);
+
+  if (window.innerWidth > 768) {
+    focusInput();
+  }
 });
 
 onUnmounted(() => {
+  terminalMounted.value = false;
   clearInterval(uptimeInterval);
 });
 
@@ -309,7 +323,15 @@ const toggleTerminal = () => {
 </script>
 
 <template>
-  <div class="terminal-container" :class="{'terminal-container-closed': terminalCollapsed}">
+  <div
+      class="terminal-container"
+      :class="{'terminal-container-closed': terminalCollapsed}"
+      :style="{
+        height: `${terminalCollapsed ? TERMINAL_BAR_HEIGHT : TERMINAL_HEIGHT}px`,
+        left: `${TOOL_STRIP_WIDTH}px`,
+        width: `calc(100vw - ${TOOL_STRIP_WIDTH}px)`,
+      }"
+  >
     <div class="terminal-title">
       <span>Terminal</span>
       <div class="terminal-title-line"></div>
@@ -376,8 +398,7 @@ const toggleTerminal = () => {
   flex-grow: 1;
   bottom: 0;
   position: fixed;
-  height: 365px;
-  width: 100vw;
+  z-index: 20;
 }
 
 .terminal-container-closed {
@@ -389,14 +410,14 @@ const toggleTerminal = () => {
 
   bottom: 20px;
   position: fixed;
-  height: 20px;
-  width: 100vw;
 }
 
 .terminal-title {
   display: flex;
   padding: 8px 15px;
   background: #282828;
+  border-top: 4px solid var(--ide-border);
+  border-bottom: 4px solid var(--ide-border);
 }
 
 .terminal-title-line {
@@ -409,7 +430,9 @@ const toggleTerminal = () => {
 }
 
 .minimise-button-container {
-  margin-left: calc(100vw - 275px);
+  margin-left: auto;
+  padding-right: 15px;
+  cursor: pointer;
 }
 
 .minimise-button {
