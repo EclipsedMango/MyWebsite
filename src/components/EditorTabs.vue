@@ -1,6 +1,7 @@
 <script setup>
+import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { activeTabRoute, closeTab, openTabs } from "@/tabsdata.js";
+import { activeTabRoute, closeTab, moveTab, openTabs } from "@/tabsdata.js";
 import { iconForFile } from "@/fileicons.js";
 import XIcon from "@/components/Icons/XIcon.vue";
 
@@ -13,6 +14,44 @@ function selectTab(tab) {
   }
 }
 
+const dragIndex = ref(null);
+const dragging = ref(false);
+
+function onDragStart(event, index) {
+  dragIndex.value = index;
+  event.dataTransfer.effectAllowed = "move";
+  event.dataTransfer.setData("text/plain", openTabs[index].route);
+  requestAnimationFrame(() => {
+    dragging.value = true;
+  });
+}
+
+function onDragOver(event, index) {
+  event.preventDefault();
+  event.dataTransfer.dropEffect = "move";
+
+  const from = dragIndex.value;
+
+  if (from === null || from === index) {
+    return;
+  }
+
+  const rect = event.currentTarget.getBoundingClientRect();
+  const pastMiddle = event.clientX > rect.left + rect.width / 2;
+
+  if (index > from ? !pastMiddle : pastMiddle) {
+    return;
+  }
+
+  moveTab(from, index);
+  dragIndex.value = index;
+}
+
+function onDragEnd() {
+  dragIndex.value = null;
+  dragging.value = false;
+}
+
 function close(tab) {
   const next = closeTab(tab.route);
 
@@ -23,16 +62,21 @@ function close(tab) {
 </script>
 
 <template>
-  <div class="editor-tabs" role="tablist" aria-label="Open pages">
+  <div class="editor-tabs" role="tablist" aria-label="Open pages" @dragover.prevent @drop.prevent>
     <div
-      v-for="tab in openTabs"
+      v-for="(tab, index) in openTabs"
       :key="tab.route"
       class="editor-tab"
-      :class="{ active: tab.route === activeTabRoute }"
+      :class="{ active: tab.route === activeTabRoute, dragging: dragging && index === dragIndex }"
       role="tab"
       tabindex="0"
+      draggable="true"
       :aria-selected="tab.route === activeTabRoute"
       :title="tab.path"
+      @dragstart="onDragStart($event, index)"
+      @dragover="onDragOver($event, index)"
+      @dragend="onDragEnd"
+      @drop.prevent="onDragEnd"
       @click="selectTab(tab)"
       @keydown.enter.prevent="selectTab(tab)"
       @keydown.delete.prevent="close(tab)"
@@ -106,6 +150,10 @@ function close(tab) {
   border-bottom-color: var(--ide-accent);
 
   color: var(--ide-text-bright);
+}
+
+.editor-tab.dragging {
+  opacity: 0.4;
 }
 
 .editor-tab:focus-visible {

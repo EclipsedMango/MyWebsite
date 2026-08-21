@@ -53,6 +53,15 @@ export function closeTab(route) {
   return activeTabRoute.value;
 }
 
+export function moveTab(from, to) {
+  if (from === to || from < 0 || to < 0 || from >= openTabs.length || to >= openTabs.length) {
+    return;
+  }
+
+  const [tab] = openTabs.splice(from, 1);
+  openTabs.splice(to, 0, tab);
+}
+
 export function syncRoute(route) {
   if (isOpenable(route)) {
     openTab(route);
