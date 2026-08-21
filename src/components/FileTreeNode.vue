@@ -1,14 +1,11 @@
 <script setup>
 import { computed } from "vue";
 import { RouterLink, useRoute } from "vue-router";
-import { fileExtension, isExpanded, toggleFolder } from "@/filetreedata.js";
+import { isExpanded, toggleFolder } from "@/filetreedata.js";
+import { iconForFile } from "@/fileicons.js";
+import { openTab } from "@/tabsdata.js";
 import ChevronIcon from "@/components/Icons/ChevronIcon.vue";
 import FolderIcon from "@/components/Icons/FolderIcon.vue";
-import FolderOpenIcon from "@/components/Icons/FolderOpenIcon.vue";
-import VueFileIcon from "@/components/Icons/VueFileIcon.vue";
-import ShellFileIcon from "@/components/Icons/ShellFileIcon.vue";
-import LinkFileIcon from "@/components/Icons/LinkFileIcon.vue";
-import MarkdownFileIcon from "@/components/Icons/MarkdownFileIcon.vue";
 
 const props = defineProps({
   node: { type: Object, required: true },
@@ -21,19 +18,12 @@ const isFolder = computed(() => props.node.type === "folder");
 const expanded = computed(() => isExpanded(props.node.path));
 const selected = computed(() => !!props.node.route && route.path === props.node.route);
 
-const FILE_ICONS = {
-  vue: VueFileIcon,
-  sh: ShellFileIcon,
-  url: LinkFileIcon,
-  md: MarkdownFileIcon,
-};
-
 const icon = computed(() => {
   if (isFolder.value) {
     return FolderIcon;
   }
 
-  return FILE_ICONS[fileExtension(props.node.name)] ?? MarkdownFileIcon;
+  return iconForFile(props.node.name);
 });
 
 const rowTag = computed(() => {
@@ -59,6 +49,11 @@ const guideOffset = computed(() => `${props.depth * 16 + 14}px`);
 function onActivate() {
   if (isFolder.value) {
     toggleFolder(props.node.path);
+    return;
+  }
+
+  if (props.node.route) {
+    openTab(props.node.route);
   }
 }
 </script>
