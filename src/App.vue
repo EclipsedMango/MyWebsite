@@ -4,7 +4,7 @@ import { useRoute } from "vue-router";
 import NavBar from "@/components/NavBar.vue";
 import EditorTabs from "@/components/EditorTabs.vue";
 import FakeTerminal from "@/components/FakeTerminal.vue";
-import { navBarCollapsed, SIDEBAR_WIDTH, SIDEBAR_WIDTH_COLLAPSED } from "@/navbardata.js";
+import { navBarCollapsed, sidebarResizing, sidebarWidth, SIDEBAR_WIDTH_COLLAPSED } from "@/navbardata.js";
 import { hasOpenTabs, isOpenable, syncRoute } from "@/tabsdata.js";
 import { terminalOffset, terminalResizing } from "@/terminaldata.js";
 
@@ -23,7 +23,7 @@ const sideBarWidth = computed(() => {
     return "0px";
   }
 
-  return `${navBarCollapsed.value ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH}px`;
+  return `${navBarCollapsed.value ? SIDEBAR_WIDTH_COLLAPSED : sidebarWidth.value}px`;
 });
 </script>
 
@@ -32,7 +32,7 @@ const sideBarWidth = computed(() => {
     <NavBar v-if="showChrome"></NavBar>
     <div
       class="editor-area"
-      :class="{ resizing: terminalResizing }"
+      :class="{ resizing: terminalResizing || sidebarResizing }"
       :style="{ marginLeft: sideBarWidth, marginBottom: bottomInset }"
     >
       <EditorTabs v-if="showChrome"></EditorTabs>
@@ -70,8 +70,9 @@ const sideBarWidth = computed(() => {
   transition: margin-left 0.25s ease, margin-bottom 0.25s ease;
 }
 
+/* Follow the dragged edge frame for frame instead of easing behind it. */
 .editor-area.resizing {
-  transition: margin-left 0.25s ease;
+  transition: none;
 }
 
 .app-content {

@@ -1,12 +1,21 @@
 <script setup>
-import { computed } from "vue";
+import { computed, onMounted, onUnmounted } from "vue";
 import FileTree from "@/components/FileTree.vue";
 import VersionControl from "@/components/VersionControl.vue";
 import FolderIcon from "@/components/Icons/FolderIcon.vue";
 import GitBranchIcon from "@/components/Icons/GitBranchIcon.vue";
 import CollapseIcon from "@/components/Icons/CollapseIcon.vue";
 import TerminalIcon from "@/components/Icons/TerminalIcon.vue";
-import { activeTool, navBarCollapsed, selectTool, SIDEBAR_WIDTH, TOOLS, TOOL_STRIP_WIDTH } from "@/navbardata.js";
+import {
+  activeTool,
+  navBarCollapsed,
+  selectTool,
+  setSidebarWidth,
+  sidebarResizing,
+  sidebarWidth,
+  TOOLS,
+  TOOL_STRIP_WIDTH,
+} from "@/navbardata.js";
 import { terminalOffset, terminalOpen, terminalResizing, toggleTerminal } from "@/terminaldata.js";
 
 const TOOL_BUTTONS = [
@@ -16,7 +25,55 @@ const TOOL_BUTTONS = [
 
 const toolWindowBottom = computed(() => `${terminalOffset.value}px`);
 
-const width = computed(() => `${navBarCollapsed.value ? TOOL_STRIP_WIDTH : SIDEBAR_WIDTH}px`);
+const width = computed(() => `${navBarCollapsed.value ? TOOL_STRIP_WIDTH : sidebarWidth.value}px`);
+
+/* Dragging the right edge resizes the tool window. */
+let resizeStartX = 0;
+let resizeStartWidth = 0;
+
+function startResize(event) {
+  if (event.button !== 0) {
+    return;
+  }
+
+  resizeStartX = event.clientX;
+  resizeStartWidth = sidebarWidth.value;
+  sidebarResizing.value = true;
+
+  event.currentTarget.setPointerCapture(event.pointerId);
+  event.preventDefault();
+}
+
+function onResize(event) {
+  if (!sidebarResizing.value) {
+    return;
+  }
+
+  setSidebarWidth(resizeStartWidth + (event.clientX - resizeStartX));
+}
+
+function stopResize(event) {
+  if (!sidebarResizing.value) {
+    return;
+  }
+
+  sidebarResizing.value = false;
+
+  if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+    event.currentTarget.releasePointerCapture(event.pointerId);
+  }
+}
+
+function nudgeResize(step) {
+  setSidebarWidth(sidebarWidth.value + step);
+}
+
+function clampToViewport() {
+  setSidebarWidth(sidebarWidth.value);
+}
+
+onMounted(() => window.addEventListener("resize", clampToViewport));
+onUnmounted(() => window.removeEventListener("resize", clampToViewport));
 
 const currentTool = computed(() => TOOLS[activeTool.value]);
 
@@ -30,7 +87,12 @@ function toggleNavBar() {
 </script>
 
 <template>
-  <aside class="sidenav-base" id="sidenav" :style="{ width }">
+  <aside
+    class="sidenav-base"
+    :class="{ resizing: sidebarResizing }"
+    id="sidenav"
+    :style="{ width }"
+  >
     <div class="tool-strip">
       <button
         v-for="tool in TOOL_BUTTONS"
@@ -73,6 +135,23 @@ function toggleNavBar() {
       <FileTree v-if="activeTool === 'project'"></FileTree>
       <VersionControl v-else-if="activeTool === 'version-control'"></VersionControl>
     </div>
+
+    <div
+      v-show="!navBarCollapsed"
+      class="sidenav-resize-handle"
+      role="separator"
+      aria-orientation="vertical"
+      aria-label="Resize tool window"
+      tabindex="0"
+      title="Drag to resize"
+      :style="{ bottom: toolWindowBottom }"
+      @pointerdown="startResize"
+      @pointermove="onResize"
+      @pointerup="stopResize"
+      @pointercancel="stopResize"
+      @keydown.left.prevent="nudgeResize(-20)"
+      @keydown.right.prevent="nudgeResize(20)"
+    ></div>
   </aside>
 </template>
 
@@ -92,6 +171,46 @@ function toggleNavBar() {
 
   transition: width 0.25s ease;
   z-index: 10;
+}
+
+.sidenav-base.resizing {
+  transition: none;
+}
+
+.sidenav-resize-handle {
+  position: absolute;
+  top: 0;
+  right: -6px;
+
+  width: 8px;
+
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+.sidenav-resize-handle::after {
+  content: "";
+
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 3px;
+
+  width: 3px;
+
+  background-color: var(--ide-accent);
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.sidenav-resize-handle:hover::after,
+.sidenav-resize-handle:focus-visible::after,
+.sidenav-base.resizing .sidenav-resize-handle::after {
+  opacity: 1;
+}
+
+.sidenav-resize-handle:focus-visible {
+  outline: none;
 }
 
 .tool-strip {
