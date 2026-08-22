@@ -3,6 +3,7 @@ import CodeEditor from "@/components/editor/CodeEditor.vue";
 import CodeLine from "@/components/editor/CodeLine.vue";
 import CodeFold from "@/components/editor/CodeFold.vue";
 import CodeInlay from "@/components/editor/CodeInlay.vue";
+import CubeIcon from "@/components/Icons/CubeIcon.vue";
 </script>
 
 <template>
@@ -17,15 +18,14 @@ import CodeInlay from "@/components/editor/CodeInlay.vue";
       <template #head>
         <span class="t-kw">int </span>
         <span class="t-fn">main</span><span class="t-p">(</span>
-        <span class="t-kw">int </span><span class="t-param">argc</span><span class="t-p">,</span>
+        <span class="t-kw">int </span><span class="t-param">argc</span><span class="t-p">, </span>
         <span class="t-kw">char </span>*<span class="t-param">argv</span><span class="t-p">[])</span>
         <span class="t-p"> {</span>
       </template>
 
       <CodeLine :indent="1">
         <span class="t-type">std</span>::<span class="t-fn">cout</span> &lt;&lt;
-        <span class="t-str">"Hallo!, I'm <span class="t-hl">Michael</span>, and this is my website. It brings together
-          everything about me, from my About Me and Projects to Services and Contact."</span>
+        <span class="t-str">"Hallo!, welcome this is my website. look around and find some easter eggs!"</span>
         &lt;&lt; <span class="t-type">std</span>::<span class="t-fn">endl</span><span class="t-p">;</span>
       </CodeLine>
       <CodeLine :indent="1"></CodeLine>
@@ -39,7 +39,7 @@ import CodeInlay from "@/components/editor/CodeInlay.vue";
       <CodeFold :indent="1">
         <template #head>
           <span class="t-kw">if </span><span class="t-p">(</span><span class="t-var">visitor</span><span class="t-p">.</span><span class="t-fn">wantsToSeeMyWork</span><span class="t-p">())</span>
-          <span class="t-p">{</span>
+          <span class="t-p"> {</span>
         </template>
 
         <CodeLine :indent="2">
@@ -58,7 +58,7 @@ import CodeInlay from "@/components/editor/CodeInlay.vue";
 
         <CodeInlay :indent="2" label="Mango Engine - C++ Custom engine built on OpenGL">
           <div class="project-card">
-            <img src="/cube.png" alt="MangoEngine" width="96" height="96" />
+            <CubeIcon class="project-card-icon"></CubeIcon>
             <div class="project-copy">
               <p>
                 This is a cool custom engine project heavily leaning into graphics, its built on OpenGL and C++ and is still a work in progress.
@@ -95,8 +95,12 @@ import CodeInlay from "@/components/editor/CodeInlay.vue";
   flex-direction: row;
   align-items: flex-start;
   gap: 14px;
+  max-width: 900px;
+}
 
-  max-width: 620px;
+.project-card-icon {
+  width: 124px;
+  height: 84px;
 }
 
 .project-card img {
