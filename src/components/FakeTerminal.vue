@@ -7,7 +7,9 @@ import {
   terminalOpen,
   terminalMounted,
   closeTerminal,
-  TERMINAL_HEIGHT,
+  setTerminalHeight,
+  terminalHeight,
+  terminalResizing,
 } from "@/terminaldata.js";
 import { TOOL_STRIP_WIDTH } from "@/navbardata.js";
 
@@ -31,6 +33,7 @@ let uptimeInterval = null;
 
 onMounted(() => {
   terminalMounted.value = true;
+  window.addEventListener("resize", clampToViewport);
 
   uptimeInterval = setInterval(() => {
     uptimeSeconds.value++;
@@ -44,6 +47,7 @@ onMounted(() => {
 onUnmounted(() => {
   terminalMounted.value = false;
   clearInterval(uptimeInterval);
+  window.removeEventListener("resize", clampToViewport);
 });
 
 // Reopening should put the caret straight back in the prompt.
@@ -318,23 +322,93 @@ const handleCommand = () => {
   scrollToBottom();
 };
 
+let resizeStartY = 0;
+let resizeStartHeight = 0;
+
+function startResize(event) {
+  if (event.button !== 0) {
+    return;
+  }
+
+  resizeStartY = event.clientY;
+  resizeStartHeight = terminalHeight.value;
+  terminalResizing.value = true;
+
+  event.currentTarget.setPointerCapture(event.pointerId);
+  event.preventDefault();
+}
+
+function onResize(event) {
+  if (!terminalResizing.value) {
+    return;
+  }
+
+  setTerminalHeight(resizeStartHeight + (resizeStartY - event.clientY));
+}
+
+function stopResize(event) {
+  if (!terminalResizing.value) {
+    return;
+  }
+
+  terminalResizing.value = false;
+
+  if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+    event.currentTarget.releasePointerCapture(event.pointerId);
+  }
+}
+
+function nudgeResize(step) {
+  setTerminalHeight(terminalHeight.value + step);
+}
+
+function clampToViewport() {
+  setTerminalHeight(terminalHeight.value);
+}
+
 </script>
 
 <template>
   <div
       class="terminal-container"
-      :class="{'terminal-container-closed': !terminalOpen}"
+      :class="{ 'terminal-container-closed': !terminalOpen, resizing: terminalResizing }"
       :style="{
-        height: `${TERMINAL_HEIGHT}px`,
+        height: `${terminalHeight}px`,
         left: `${TOOL_STRIP_WIDTH}px`,
         width: `calc(100vw - ${TOOL_STRIP_WIDTH}px)`,
       }"
   >
-    <div class="terminal-title">
+    <div
+      class="terminal-title"
+      @pointerdown="startResize"
+      @pointermove="onResize"
+      @pointerup="stopResize"
+      @pointercancel="stopResize"
+    >
+      <div
+        class="terminal-resize-handle"
+        role="separator"
+        aria-orientation="horizontal"
+        aria-label="Resize terminal"
+        tabindex="0"
+        title="Drag to resize"
+        @pointerdown.stop="startResize"
+        @pointermove="onResize"
+        @pointerup="stopResize"
+        @pointercancel="stopResize"
+        @keydown.up.prevent="nudgeResize(20)"
+        @keydown.down.prevent="nudgeResize(-20)"
+      ></div>
       <span>Terminal</span>
       <div class="terminal-title-line"></div>
       <span style="padding-left: 25px">Local</span>
-      <button class="close-button" type="button" title="Close terminal" @click="closeTerminal">
+      <button
+        class="close-button"
+        type="button"
+        title="Close terminal"
+        @pointerdown.stop
+        @click="closeTerminal"
+      >
         <XIcon></XIcon>
       </button>
     </div>
@@ -400,11 +474,54 @@ const handleCommand = () => {
 }
 
 .terminal-title {
+  position: relative;
+
   display: flex;
   padding: 8px 15px;
   background: #282828;
   border-top: 4px solid var(--ide-border);
   border-bottom: 4px solid var(--ide-border);
+
+  cursor: ns-resize;
+  user-select: none;
+  touch-action: none;
+}
+
+.terminal-resize-handle {
+  position: absolute;
+  top: -6px;
+  left: 0;
+  right: 0;
+
+  height: 8px;
+
+  cursor: ns-resize;
+  touch-action: none;
+}
+
+.terminal-resize-handle::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 3px;
+
+  height: 3px;
+
+  background-color: var(--ide-accent);
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.terminal-resize-handle:hover::after,
+.terminal-resize-handle:focus-visible::after,
+.terminal-container.resizing .terminal-resize-handle::after {
+  opacity: 1;
+}
+
+.terminal-resize-handle:focus-visible {
+  outline: none;
 }
 
 .terminal-title-line {
@@ -440,7 +557,7 @@ const handleCommand = () => {
 }
 
 .terminal {
-  transition: all 0.5s ease;
+  transition: background 0.5s ease;
   display: flex;
   flex-direction: column;
   flex-grow: 1;

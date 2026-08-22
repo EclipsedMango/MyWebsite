@@ -1,5 +1,5 @@
 /* color palette from <https://github.com/vuejs/theme> */
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
 :root {
   --vt-c-white: #181818;
@@ -23,7 +23,6 @@
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
 }
 
-/* semantic color variables for this project */
 :root {
   --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
@@ -90,8 +89,9 @@ body {
     background-color 0.5s;
   line-height: 1.6;
   font-family: "JetBrains Mono", monospace;
-  /*font-family: "Fredoka", sans-serif;*/
   font-size: 15px;
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "clig" 0, "calt" 0;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

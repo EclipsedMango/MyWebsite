@@ -1,123 +1,114 @@
 <script setup>
-
+import CodeEditor from "@/components/editor/CodeEditor.vue";
+import CodeLine from "@/components/editor/CodeLine.vue";
+import CodeFold from "@/components/editor/CodeFold.vue";
+import CodeInlay from "@/components/editor/CodeInlay.vue";
 </script>
 
 <template>
-  <div class="home-page">
-    <div class="home-container">
-      <div class="home-line"></div>
-      <div class="home-container-2">
-        <h1 class="home-header">
-          <span style="font-style: italic; color: #d55fde">static int </span>
-          <span style="color: #51abef">main</span>
-          <span style="color: #e8b936">(</span>
-          <span>
-            <span style="font-style: italic; color: #d55fde">int </span>
-            <span style="color: #5c636e;">argc</span>,
-            <span style="font-style: italic; color: #d55fde">char </span>
-            *<span style="color: #5c636e;">argv</span>
-            <span style="color: #e8b936">[]</span>
-          </span>
-          <span style="color: #e8b936">)</span> {
-        </h1>
-        <div class="home-text-box-container">
-          <div class="home-text-box-style">
-            <span style="color: #e5be70">std</span>::<span style="color: #51abef">cout</span> <<
-            <span style="color: #89ca78">
-            "Hallo!, I'm <span style="color: #039393">Michael</span>, and this is my website.
-            It brings together everything about me, from my About Me and Projects to Services and Contact."</span>
-            << <span style="color: #e5be70"> std</span>::<span style="color: #51abef">endl</span>;
-          </div>
-          <div class="home-text-box-style">
-            <RouterLink to="about-me" class="navigation-text"><span style="color: #51abef">AboutMe</span></RouterLink>
-            <span style="color: #e8b936">()</span>; <span style="color: #5c636e;">// Takes you to my About me, where you can learn more info.</span><br>
+  <CodeEditor :path="['src', 'pages', 'Home.vue']">
+    <CodeLine><span class="t-mac">#include</span> <span class="t-str">&lt;michael/website.h&gt;</span></CodeLine>
+    <CodeLine><span class="t-kw">using namespace</span> <span class="t-var">michael</span><span class="t-p">;</span></CodeLine>
+    <CodeLine></CodeLine>
+    <CodeLine><span class="t-com">// everything about me lives in this project. poke around the file tree to navigate.</span></CodeLine>
+    <CodeLine></CodeLine>
 
-            <RouterLink to="projects" class="navigation-text"><span style="color: #51abef">Projects</span></RouterLink>
-            <span style="color: #e8b936">()</span>; <span style="color: #5c636e;">// Takes you to a page with a bunch of my projects.</span><br>
+    <CodeFold run>
+      <template #head>
+        <span class="t-kw">int </span>
+        <span class="t-fn">main</span><span class="t-p">(</span>
+        <span class="t-kw">int </span><span class="t-param">argc</span><span class="t-p">,</span>
+        <span class="t-kw">char </span>*<span class="t-param">argv</span><span class="t-p">[])</span>
+        <span class="t-p"> {</span>
+      </template>
 
-            <RouterLink to="services" class="navigation-text"><span style="color: #51abef">Services</span></RouterLink>
-            <span style="color: #e8b936">()</span>; <span style="color: #5c636e;">// Takes you to a page where you can see what I have to offer.</span><br>
+      <CodeLine :indent="1">
+        <span class="t-type">std</span>::<span class="t-fn">cout</span> &lt;&lt;
+        <span class="t-str">"Hallo!, I'm <span class="t-hl">Michael</span>, and this is my website. It brings together
+          everything about me, from my About Me and Projects to Services and Contact."</span>
+        &lt;&lt; <span class="t-type">std</span>::<span class="t-fn">endl</span><span class="t-p">;</span>
+      </CodeLine>
+      <CodeLine :indent="1"></CodeLine>
 
-            <RouterLink to="contact" class="navigation-text"><span style="color: #51abef">Contact</span></RouterLink>
-            <span style="color: #e8b936">()</span>; <span style="color: #5c636e;">// Takes you my Contacts page, where you can contact me.</span>
+      <CodeLine :indent="1">
+        <span class="t-type">Visitor</span>
+        <span class="t-var"> visitor</span><span class="t-p">;</span>
+      </CodeLine>
+      <CodeLine :indent="1"></CodeLine>
+
+      <CodeFold :indent="1">
+        <template #head>
+          <span class="t-kw">if </span><span class="t-p">(</span><span class="t-var">visitor</span><span class="t-p">.</span><span class="t-fn">wantsToSeeMyWork</span><span class="t-p">())</span>
+          <span class="t-p">{</span>
+        </template>
+
+        <CodeLine :indent="2">
+          <span class="t-type">Project</span>* <span class="t-var">featured</span> = <span class="t-kw">new </span><span class="t-type">Project</span><span class="t-p">(</span>
+          <span class="t-str">"MangoEngine"</span><span class="t-p">);</span>
+        </CodeLine>
+        <CodeLine :indent="2">
+          <span class="t-var">featured</span>-><a
+            href="https://github.com/EclipsedMango/MangoEngine"
+            target="_blank"
+            rel="noopener"
+            class="code-link"
+          >open</a><span class="t-p">();</span>
+          <span class="t-com"> // cool custom engine in opengl, it still needs some work</span>
+        </CodeLine>
+
+        <CodeInlay :indent="2" label="Mango Engine - C++ Custom engine built on OpenGL">
+          <div class="project-card">
+            <img src="/cube.png" alt="MangoEngine" width="96" height="96" />
+            <div class="project-copy">
+              <p>
+                This is a cool custom engine project heavily leaning into graphics, its built on OpenGL and C++ and is still a work in progress.
+              </p>
+              <p>
+                <a
+                  href="https://github.com/EclipsedMango/MangoEngine"
+                  target="_blank"
+                  rel="noopener"
+                  class="code-link"
+                >github.com/EclipsedMango/MangoEngine</a>
+              </p>
+            </div>
           </div>
-          <div class="home-text-box-style">
-            <span style="color: #e8b936">Project</span>* featuredProject = <span style="font-style: italic; color: #d55fde">new </span>
-            <span style="color: #e8b936">Project(</span>
-            <span style="color: #89ca78">"Ball Game The Game"</span>, <span style="color: #89ca78">"In Raylib"</span><span style="color: #e8b936">)</span>;
-            <br>
-            featuredProject-><a href="https://github.com/EclipsedMango/BallGameTheGame" style="color: #51abef" class="navigation-text">link</a><span style="color: #e8b936">()</span>;
-            <span style="color: #5c636e;">// Check out my latest game! (Still WIP)</span>
-            <br>
-            <span style="font-style: italic; color: #d55fde">return</span> <span style="color: #d19960">0</span>;
-          </div>
-        </div>
-        <div class="home-header">
-          }
-        </div>
-      </div>
-    </div>
-  </div>
+        </CodeInlay>
+      </CodeFold>
+
+      <CodeLine :indent="1"></CodeLine>
+      <CodeLine :indent="1">
+        <span class="t-type">std</span>::<span class="t-type">vector</span>&lt;<span class="t-type">Link</span>&gt; <span class="t-var">links</span> = <span class="t-p">{ </span>
+        <a href="https://github.com/EclipsedMango" target="_blank" rel="noopener" class="code-link">github</a><span class="t-p">,</span>
+        <a href="https://www.linkedin.com/in/michael-iordanou-79126237a/" target="_blank" rel="noopener" class="code-link">linkedin</a>
+        <span class="t-p"> };</span>
+      </CodeLine>
+      <CodeLine :indent="1"></CodeLine>
+      <CodeLine :indent="1"><span class="t-kw">return </span><span class="t-num">0</span><span class="t-p">;</span></CodeLine>
+    </CodeFold>
+  </CodeEditor>
 </template>
 
 <style scoped>
-
-.home-page {
-  display: flex;
-  flex-direction: column;
-  width: 100vw;
-  overflow: hidden;
-}
-
-.home-container {
+.project-card {
   display: flex;
   flex-direction: row;
+  align-items: flex-start;
+  gap: 14px;
+
+  max-width: 620px;
 }
 
-.home-container-2 {
-  display: flex;
-  flex-direction: column;
-  margin-left: 60px;
-  margin-top: 60px;
+.project-card img {
+  flex: 0 0 96px;
+
+  padding: 10px;
+  border: 1px solid var(--ide-border);
+  border-radius: 6px;
+  background-color: var(--ide-bar);
 }
 
-.home-line {
-  border-left: 2px solid rgba(51, 51, 51, 0.64);
-  height: 375px;
-  position: relative;
-  left: 62px;
-  top: 125px;
-  margin-left: -2px;
-  z-index: 0;
+.project-copy {
+  min-width: 0;
 }
-
-.home-header {
-  font-size: 40px;
-}
-
-.home-text-box-container {
-  margin-left: 120px;
-}
-
-.home-text-box-style {
-  max-width: 1100px;
-  text-wrap: wrap;
-  font-size: 18px;
-  background: #101010;
-  border: solid #070707;
-  padding: 10px 10px;
-  margin-bottom: 15px;
-}
-
-.navigation-text {
-  text-decoration: underline;
-  text-underline-offset: 6px;
-  color: #51abef;
-}
-
-.navigation-text:hover {
-  background-color: rgba(74, 158, 218, 0.39);
-  outline: rgba(0, 187, 250, 0.39) solid 2px;
-}
-
 </style>

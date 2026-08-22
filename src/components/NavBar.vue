@@ -7,7 +7,7 @@ import GitBranchIcon from "@/components/Icons/GitBranchIcon.vue";
 import CollapseIcon from "@/components/Icons/CollapseIcon.vue";
 import TerminalIcon from "@/components/Icons/TerminalIcon.vue";
 import { activeTool, navBarCollapsed, selectTool, SIDEBAR_WIDTH, TOOLS, TOOL_STRIP_WIDTH } from "@/navbardata.js";
-import { terminalOffset, terminalOpen, toggleTerminal } from "@/terminaldata.js";
+import { terminalOffset, terminalOpen, terminalResizing, toggleTerminal } from "@/terminaldata.js";
 
 const TOOL_BUTTONS = [
   { id: "project", icon: FolderIcon },
@@ -57,7 +57,12 @@ function toggleNavBar() {
       </button>
     </div>
 
-    <div v-show="!navBarCollapsed" class="tool-window" :style="{ marginBottom: toolWindowBottom }">
+    <div
+      v-show="!navBarCollapsed"
+      class="tool-window"
+      :class="{ resizing: terminalResizing }"
+      :style="{ marginBottom: toolWindowBottom }"
+    >
       <div class="tool-window-header">
         <div class="tool-window-name">{{ currentTool.title }}</div>
         <span class="tool-window-title">{{ currentTool.subtitle }}</span>
@@ -152,6 +157,10 @@ function toggleNavBar() {
 
   background-color: var(--ide-bg);
   overflow: hidden;
+}
+
+.tool-window.resizing {
+  transition: none;
 }
 
 .tool-window-header {

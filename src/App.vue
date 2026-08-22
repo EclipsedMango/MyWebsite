@@ -6,6 +6,7 @@ import EditorTabs from "@/components/EditorTabs.vue";
 import FakeTerminal from "@/components/FakeTerminal.vue";
 import { navBarCollapsed, SIDEBAR_WIDTH, SIDEBAR_WIDTH_COLLAPSED } from "@/navbardata.js";
 import { hasOpenTabs, isOpenable, syncRoute } from "@/tabsdata.js";
+import { terminalOffset, terminalResizing } from "@/terminaldata.js";
 
 const route = useRoute();
 
@@ -14,6 +15,8 @@ const showChrome = computed(() => !route.meta.hideChrome);
 watch(() => route.path, (path) => syncRoute(path), { immediate: true });
 
 const showEmptyEditor = computed(() => showChrome.value && isOpenable(route.path) && !hasOpenTabs.value);
+
+const bottomInset = computed(() => (showChrome.value ? `${terminalOffset.value}px` : "0px"));
 
 const sideBarWidth = computed(() => {
   if (!showChrome.value) {
@@ -27,7 +30,11 @@ const sideBarWidth = computed(() => {
 <template>
   <div class="main-app">
     <NavBar v-if="showChrome"></NavBar>
-    <div class="editor-area" :style="{ marginLeft: sideBarWidth }">
+    <div
+      class="editor-area"
+      :class="{ resizing: terminalResizing }"
+      :style="{ marginLeft: sideBarWidth, marginBottom: bottomInset }"
+    >
       <EditorTabs v-if="showChrome"></EditorTabs>
       <div v-if="showEmptyEditor" class="empty-editor">
         <p class="empty-title">No file is open</p>
@@ -58,8 +65,12 @@ const sideBarWidth = computed(() => {
 
   flex: 1;
   min-width: 0;
-  height: 100%;
+  min-height: 0;
 
+  transition: margin-left 0.25s ease, margin-bottom 0.25s ease;
+}
+
+.editor-area.resizing {
   transition: margin-left 0.25s ease;
 }
 
@@ -72,7 +83,7 @@ const sideBarWidth = computed(() => {
   min-width: 0;
   min-height: 0;
 
-  overflow: auto;
+  overflow: hidden;
 }
 
 .empty-editor {
