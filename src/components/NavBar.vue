@@ -6,6 +6,7 @@ import FolderIcon from "@/components/Icons/FolderIcon.vue";
 import GitBranchIcon from "@/components/Icons/GitBranchIcon.vue";
 import CollapseIcon from "@/components/Icons/CollapseIcon.vue";
 import TerminalIcon from "@/components/Icons/TerminalIcon.vue";
+import SettingsIcon from "@/components/Icons/SettingsIcon.vue";
 import {
   activeTool,
   navBarCollapsed,
@@ -17,6 +18,7 @@ import {
   TOOL_STRIP_WIDTH,
 } from "@/navbardata.js";
 import { terminalOffset, terminalOpen, terminalResizing, toggleTerminal } from "@/terminaldata.js";
+import { settingsOpen, toggleSettings } from "@/settingsdata.js";
 
 const TOOL_BUTTONS = [
   { id: "project", icon: FolderIcon },
@@ -116,6 +118,17 @@ function toggleNavBar() {
         @click="toggleTerminal"
       >
         <TerminalIcon class="strip-icon"></TerminalIcon>
+      </button>
+
+      <button
+        class="tool-strip-button"
+        :class="{ active: settingsOpen }"
+        type="button"
+        title="Settings"
+        :aria-pressed="settingsOpen"
+        @click="toggleSettings"
+      >
+        <SettingsIcon class="strip-icon"></SettingsIcon>
       </button>
     </div>
 

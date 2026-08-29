@@ -5,6 +5,7 @@ import NavBar from "@/components/NavBar.vue";
 import EditorTabs from "@/components/EditorTabs.vue";
 import FakeTerminal from "@/components/FakeTerminal.vue";
 import ModePrompt from "@/components/ModePrompt.vue";
+import SettingsDialog from "@/components/SettingsDialog.vue";
 import { navBarCollapsed, sidebarResizing, sidebarWidth, SIDEBAR_WIDTH_COLLAPSED } from "@/navbardata.js";
 import { hasOpenTabs, isOpenable, syncRoute } from "@/tabsdata.js";
 import { terminalOffset, terminalResizing } from "@/terminaldata.js";
@@ -50,6 +51,7 @@ const sideBarWidth = computed(() => {
     </div>
     <FakeTerminal v-if="showChrome"></FakeTerminal>
     <ModePrompt v-if="showChrome"></ModePrompt>
+    <SettingsDialog v-if="showChrome"></SettingsDialog>
   </div>
 </template>
 
