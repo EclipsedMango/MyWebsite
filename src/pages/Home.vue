@@ -4,10 +4,14 @@ import CodeLine from "@/components/editor/CodeLine.vue";
 import CodeFold from "@/components/editor/CodeFold.vue";
 import CodeInlay from "@/components/editor/CodeInlay.vue";
 import CubeIcon from "@/components/Icons/CubeIcon.vue";
+import SimpleHome from "@/pages/simple/SimpleHome.vue";
+import { simpleMode } from "@/viewerdata.js";
 </script>
 
 <template>
-  <CodeEditor :path="['src', 'pages', 'Home.vue']">
+  <SimpleHome v-if="simpleMode"></SimpleHome>
+
+  <CodeEditor v-else :path="['src', 'pages', 'Home.vue']">
     <CodeLine><span class="t-mac">#include</span> <span class="t-str">&lt;michael/website.h&gt;</span></CodeLine>
     <CodeLine><span class="t-kw">using namespace</span> <span class="t-var">michael</span><span class="t-p">;</span></CodeLine>
     <CodeLine></CodeLine>

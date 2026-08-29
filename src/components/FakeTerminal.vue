@@ -12,6 +12,7 @@ import {
   terminalResizing,
 } from "@/terminaldata.js";
 import { TOOL_STRIP_WIDTH } from "@/navbardata.js";
+import { askViewerMode, setViewerMode, viewerMode, VIEWER_MODES } from "@/viewerdata.js";
 
 const history = ref(['Welcome to the Terminal. Type <span class="text-success">help</span> to get started.']);
 const command = ref('');
@@ -141,6 +142,31 @@ const commands = {
     description: 'Shows how long the terminal has been running.',
     execute: () => {
       pushHistory(`This console has been running for: ${formattedUptime.value}`);
+    }
+  },
+  mode: {
+    description: 'Shows or changes the site view (ide, simple, ask).',
+    execute: (args) => {
+      const target = args[0];
+
+      if (!target) {
+        pushHistory(`Current view: <span class="text-success">${viewerMode.value ?? 'unset'}</span>. Usage: mode &lt;ide|simple|ask&gt;`);
+        return;
+      }
+
+      if (target === 'ask') {
+        askViewerMode();
+        pushHistory('Reopening the welcome prompt.');
+        return;
+      }
+
+      if (!VIEWER_MODES.includes(target)) {
+        pushHistory(`<span class="text-error">Error:</span> Unknown view. Usage: mode &lt;ide|simple|ask&gt;`);
+        return;
+      }
+
+      setViewerMode(target);
+      pushHistory(`View set to <span class="text-success">${target}</span>.`);
     }
   },
   clear: {

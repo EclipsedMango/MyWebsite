@@ -4,9 +4,11 @@ import { useRoute } from "vue-router";
 import NavBar from "@/components/NavBar.vue";
 import EditorTabs from "@/components/EditorTabs.vue";
 import FakeTerminal from "@/components/FakeTerminal.vue";
+import ModePrompt from "@/components/ModePrompt.vue";
 import { navBarCollapsed, sidebarResizing, sidebarWidth, SIDEBAR_WIDTH_COLLAPSED } from "@/navbardata.js";
 import { hasOpenTabs, isOpenable, syncRoute } from "@/tabsdata.js";
 import { terminalOffset, terminalResizing } from "@/terminaldata.js";
+import { simpleMode } from "@/viewerdata.js";
 
 const route = useRoute();
 
@@ -37,14 +39,17 @@ const sideBarWidth = computed(() => {
     >
       <EditorTabs v-if="showChrome"></EditorTabs>
       <div v-if="showEmptyEditor" class="empty-editor">
-        <p class="empty-title">No file is open</p>
-        <p class="empty-hint">Open one from the Project tool window on the left.</p>
+        <p class="empty-title">{{ simpleMode ? "Nothing is open" : "No file is open" }}</p>
+        <p class="empty-hint">
+          {{ simpleMode ? "Pick a page from the list on the left." : "Open one from the Project tool window on the left." }}
+        </p>
       </div>
       <main v-else class="app-content">
         <RouterView></RouterView>
       </main>
     </div>
     <FakeTerminal v-if="showChrome"></FakeTerminal>
+    <ModePrompt v-if="showChrome"></ModePrompt>
   </div>
 </template>
 

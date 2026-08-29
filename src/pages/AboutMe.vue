@@ -2,10 +2,14 @@
 import CodeEditor from "@/components/editor/CodeEditor.vue";
 import CodeLine from "@/components/editor/CodeLine.vue";
 import CodeFold from "@/components/editor/CodeFold.vue";
+import SimpleAboutMe from "@/pages/simple/SimpleAboutMe.vue";
+import { simpleMode } from "@/viewerdata.js";
 </script>
 
 <template>
-  <CodeEditor :path="['src', 'pages', 'AboutMe.vue']">
+  <SimpleAboutMe v-if="simpleMode"></SimpleAboutMe>
+
+  <CodeEditor v-else :path="['src', 'pages', 'AboutMe.vue']">
     <CodeLine><span class="t-mac">#include</span> <span class="t-str">&lt;michael/about_me.h&gt;</span></CodeLine>
     <CodeLine></CodeLine>
 

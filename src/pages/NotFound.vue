@@ -2,12 +2,16 @@
 import { useRoute } from "vue-router";
 import CodeEditor from "@/components/editor/CodeEditor.vue";
 import CodeLine from "@/components/editor/CodeLine.vue";
+import SimpleNotFound from "@/pages/simple/SimpleNotFound.vue";
+import { simpleMode } from "@/viewerdata.js";
 
 const route = useRoute();
 </script>
 
 <template>
-  <CodeEditor :path="['src', 'pages', 'NotFound.vue']" status="1 problem">
+  <SimpleNotFound v-if="simpleMode"></SimpleNotFound>
+
+  <CodeEditor v-else :path="['src', 'pages', 'NotFound.vue']" status="1 problem">
     <CodeLine><span class="t-com">/*</span></CodeLine>
     <CodeLine><span class="t-com"> * 404 — cannot resolve file '<span class="t-warn">{{ route.path }}</span>'</span></CodeLine>
     <CodeLine><span class="t-com"> */</span></CodeLine>

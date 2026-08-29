@@ -1,0 +1,74 @@
+:root {
+  --simple-font: "Roboto", "Fredoka", system-ui, sans-serif;
+
+  --simple-fg: #c8ccd0;
+  --simple-fg-bright: #f0f2f4;
+  --simple-fg-muted: #8b9298;
+
+  --simple-card: #1d2224;
+  --simple-card-border: #2a3134;
+  --simple-card-shadow: 5px 5px 25px #121414;
+
+  --simple-accent: #5fc2ff;
+  --simple-heading: linear-gradient(#7bfecc, #4bbbbe);
+}
+
+.simple-heading {
+  font-family: var(--simple-font);
+  font-weight: 700;
+  line-height: 1.2;
+
+  background: var(--simple-heading);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  width: fit-content;
+}
+
+.simple-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  padding: 22px 24px;
+
+  border: 1px solid var(--simple-card-border);
+  border-radius: 10px;
+  background-color: var(--simple-card);
+  box-shadow: var(--simple-card-shadow);
+}
+
+.simple-card h2 {
+  font-size: 22px;
+}
+
+.simple-card p {
+  color: var(--simple-fg);
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+.simple-note,
+.simple-card .simple-note {
+  color: var(--simple-fg-muted);
+  font-size: 15px;
+}
+
+.simple-link {
+  color: var(--simple-accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(95, 194, 255, 0.45);
+  border-radius: 3px;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.simple-link:hover {
+  color: #9ad9ff;
+  background-color: rgba(95, 194, 255, 0.12);
+  text-decoration-color: currentColor;
+}
+
+.simple-link:focus-visible {
+  outline: 1px solid var(--ide-accent);
+  outline-offset: 2px;
+}
