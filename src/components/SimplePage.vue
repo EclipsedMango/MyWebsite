@@ -2,14 +2,15 @@
 defineProps({
   title: { type: String, default: "" },
   lead: { type: String, default: "" },
+  wide: { type: Boolean, default: false },
 });
 </script>
 
 <template>
   <div class="simple-page">
     <div class="simple-scroll">
-      <div class="simple-content">
-        <header class="simple-header">
+      <div class="simple-content" :class="{ wide }">
+        <header v-if="title || lead" class="simple-header">
           <h1 class="simple-heading simple-title">{{ title }}</h1>
           <p v-if="lead" class="simple-lead">{{ lead }}</p>
         </header>
@@ -49,6 +50,10 @@ defineProps({
   width: min(860px, 100%);
   margin: 0 auto;
   padding: 48px 32px 64px;
+}
+
+.simple-content.wide {
+  width: min(1100px, 100%);
 }
 
 .simple-header {
