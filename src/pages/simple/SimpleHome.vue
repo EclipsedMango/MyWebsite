@@ -5,11 +5,11 @@ import LinkedinIcon from "@/components/Icons/LinkedinIcon.vue";
 </script>
 
 <template>
-  <SimplePage wide class="mango">
-    <h1 class="hero-title gradient-text">Hallo<span class="cursor">_</span></h1>
+  <SimplePage>
+    <h1 class="simple-heading hero-title">Hallo<span class="simple-cursor">_</span></h1>
 
     <div class="banner">
-      <section class="panel cube-tile">
+      <section class="simple-panel cube-tile">
         <svg class="cube" viewBox="0 0 100 100" fill="none" stroke="url(#cubeGradient)" stroke-width="6" stroke-linejoin="round">
           <defs>
             <linearGradient id="cubeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -22,29 +22,29 @@ import LinkedinIcon from "@/components/Icons/LinkedinIcon.vue";
         </svg>
       </section>
 
-      <section class="panel banner-copy">
+      <section class="simple-panel banner-copy">
         <p>Welcome to my website. Have a look around and see if you can find some easter eggs.</p>
-        <p class="muted">You can navigate the website through the list on the left.</p>
+        <p class="simple-muted">You can navigate the website through the list on the left.</p>
       </section>
     </div>
 
-    <p class="prompt"><span class="muted">~/projects $</span> ls</p>
+    <p class="prompt"><span class="simple-muted">~/projects $</span> ls</p>
 
     <div class="cards">
-      <section class="panel card intro">
+      <section class="simple-panel card intro">
         <span class="card-label gradient-text">whoami</span>
         <p>I'm a graphics programmer.</p>
         <p>
           If you want to learn more about me, head over to
-          <RouterLink to="/about-me" class="file-link">AboutMe.vue</RouterLink>.
+          <RouterLink to="/about-me" class="simple-link">AboutMe.vue</RouterLink>.
         </p>
         <p>
-          To see my projects open <RouterLink to="/projects" class="file-link">Projects.vue</RouterLink>,
-          or to contact me open <RouterLink to="/contact" class="file-link">Contact.vue</RouterLink>.
+          To see my projects open <RouterLink to="/projects" class="simple-link">Projects.vue</RouterLink>,
+          or to contact me open <RouterLink to="/contact" class="simple-link">Contact.vue</RouterLink>.
         </p>
       </section>
 
-      <a class="panel card" href="https://github.com/EclipsedMango/MangoEngine" target="_blank" rel="noopener">
+      <a class="simple-panel card" href="https://github.com/EclipsedMango/MangoEngine" target="_blank" rel="noopener">
         <span class="card-label gradient-text">Featured Project</span>
         <div class="card-preview">
           <span class="preview-text">MangoEngine/</span>
@@ -52,8 +52,8 @@ import LinkedinIcon from "@/components/Icons/LinkedinIcon.vue";
         <p>C++ / OpenGL engine. work in progress.</p>
       </a>
 
-      <div class="panel card placeholder">
-        <span class="card-label muted">coming_soon/</span>
+      <div class="simple-panel card placeholder">
+        <span class="card-label simple-muted">coming_soon/</span>
         <div class="card-preview"></div>
         <p>Not coming soon...</p>
       </div>
@@ -71,51 +71,10 @@ import LinkedinIcon from "@/components/Icons/LinkedinIcon.vue";
 </template>
 
 <style scoped>
-.mango {
-  --accent-gradient: linear-gradient(to right, #5fc2ff, #7bfecc);
-  --grey-bright: #e6e6e6;
-  --grey: #b4b4b4;
-  --grey-dim: #858585;
-  --panel: #282828;
-  --panel-inner: #3a3a3a;
-
-  font-family: "JetBrains Mono", "Roboto Mono", monospace;
-  color: var(--grey);
-}
-
-.mango :deep(.simple-content) {
-  container-type: inline-size;
-  gap: 24px;
-  padding-top: 44px;
-  padding-bottom: 48px;
-}
-
 .hero-title {
   font-size: clamp(56px, 9vw, 96px);
   font-weight: 400;
   line-height: 1;
-}
-
-.cursor {
-  animation: blink 1.1s steps(1) infinite;
-}
-
-@keyframes blink {
-  50% { opacity: 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cursor { animation: none; }
-}
-
-.panel {
-  border: 1px solid transparent;
-  border-radius: 4px;
-  background: var(--panel);
-}
-
-.muted {
-  color: var(--grey-dim);
 }
 
 .banner {
@@ -189,7 +148,7 @@ import LinkedinIcon from "@/components/Icons/LinkedinIcon.vue";
   flex-direction: column;
   gap: 14px;
   padding: 18px;
-  color: var(--grey-bright);
+  color: var(--simple-fg-bright);
   text-decoration: none;
   transition: transform 0.15s ease;
 }
@@ -206,7 +165,7 @@ a.card::before {
   padding: 3px;
 
   border-radius: 6px;
-  background: var(--accent-gradient);
+  background: var(--simple-accent-gradient);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
@@ -225,38 +184,14 @@ a.card:hover::before {
 }
 
 .card.intro p {
-  color: var(--grey);
+  color: var(--simple-fg);
   font-size: 15px;
   line-height: 1.6;
 }
 
 .card.intro p:first-of-type {
-  color: var(--grey-bright);
+  color: var(--simple-fg-bright);
   font-size: 17px;
-}
-
-.file-link {
-  background: var(--accent-gradient);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-
-  text-decoration: underline;
-  text-decoration-color: rgba(95, 194, 255, 0.35);
-  text-underline-offset: 4px;
-  transition: text-decoration-color 0.15s ease;
-}
-
-.file-link:hover {
-  text-decoration-color: #7bfecc;
-}
-
-.gradient-text {
-  width: fit-content;
-  background: var(--accent-gradient);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 .card-label {
@@ -268,25 +203,25 @@ a.card:hover::before {
   place-items: center;
   aspect-ratio: 4 / 3;
   border-radius: 4px;
-  background: var(--panel-inner);
+  background: var(--simple-panel-inner);
 }
 
 .preview-text {
-  color: var(--grey-dim);
+  color: var(--simple-fg-muted);
   font-size: 15px;
 }
 
 .card p {
   font-size: 15px;
-  color: var(--grey-dim);
+  color: var(--simple-fg-muted);
 }
 
 .card.placeholder p {
-  color: #404040;
+  color: var(--simple-fg-faint);
 }
 
 .placeholder .card-preview {
-  background: #2f2f2f;
+  background: var(--simple-panel-empty);
 }
 
 .links {
@@ -298,7 +233,7 @@ a.card:hover::before {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  color: var(--grey);
+  color: var(--simple-fg);
   text-decoration: none;
   font-size: 16px;
 }

@@ -25,9 +25,8 @@ const route = useRoute();
   padding: 2px 6px;
 
   border-radius: 4px;
-  background-color: #24282a;
+  background-color: var(--simple-panel-inner);
   color: var(--simple-fg-bright);
-  font-family: var(--code-font);
   font-size: 15px;
 }
 </style>

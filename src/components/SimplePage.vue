@@ -2,16 +2,15 @@
 defineProps({
   title: { type: String, default: "" },
   lead: { type: String, default: "" },
-  wide: { type: Boolean, default: false },
 });
 </script>
 
 <template>
   <div class="simple-page">
     <div class="simple-scroll">
-      <div class="simple-content" :class="{ wide }">
+      <div class="simple-content">
         <header v-if="title || lead" class="simple-header">
-          <h1 class="simple-heading simple-title">{{ title }}</h1>
+          <h1 class="simple-heading simple-title">{{ title }}<span class="simple-cursor">_</span></h1>
           <p v-if="lead" class="simple-lead">{{ lead }}</p>
         </header>
 
@@ -31,6 +30,7 @@ defineProps({
   min-height: 0;
 
   background-color: var(--ide-bg);
+  color: var(--simple-fg);
   font-family: var(--simple-font);
 }
 
@@ -47,28 +47,27 @@ defineProps({
   flex-direction: column;
   gap: 24px;
 
-  width: min(860px, 100%);
-  margin: 0 auto;
-  padding: 48px 32px 64px;
-}
-
-.simple-content.wide {
   width: min(1100px, 100%);
+  margin: 0 auto;
+  padding: 44px 32px 48px;
+
+  container-type: inline-size;
 }
 
 .simple-header {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
 }
 
 .simple-title {
-  font-size: 40px;
+  font-size: clamp(44px, 7vw, 72px);
+  line-height: 1;
 }
 
 .simple-lead {
-  color: var(--simple-fg);
-  font-size: 19px;
+  color: var(--simple-fg-muted);
+  font-size: 18px;
   line-height: 1.6;
 }
 
@@ -96,7 +95,7 @@ defineProps({
   }
 
   .simple-title {
-    font-size: 32px;
+    font-size: 40px;
   }
 }
 </style>
