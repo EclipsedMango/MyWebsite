@@ -33,7 +33,7 @@ import LinkedinIcon from "@/components/Icons/LinkedinIcon.vue";
     <div class="cards">
       <section class="simple-panel card intro">
         <span class="card-label gradient-text">whoami</span>
-        <p>I'm a graphics programmer.</p>
+        <p>I'm Michael Iordanou, a graphics programmer.</p>
         <p>
           If you want to learn more about me, head over to
           <RouterLink to="/about-me" class="simple-link">AboutMe.vue</RouterLink>.
